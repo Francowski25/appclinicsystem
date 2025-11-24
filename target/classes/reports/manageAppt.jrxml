@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports
+                        http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+    name="tablaSimple" pageWidth="595" pageHeight="842" columnWidth="555"
+    leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+
+    <!-- Styles -->
+    <style name="HeaderStyle" fontName="Arial" fontSize="12" isBold="true" pdfFontName="Helvetica-Bold"/>
+    <style name="DetailStyle" fontName="Arial" fontSize="10" pdfFontName="Helvetica"/>
+
+    <!-- Fields -->
+    <field name="col1" class="java.lang.String"/>
+    <field name="col2" class="java.lang.String"/>
+    <field name="col3" class="java.lang.String"/>
+    <field name="col4" class="java.lang.String"/>
+    <field name="col5" class="java.lang.String"/>
+    <field name="col6" class="java.lang.String"/>
+
+    <!-- Column Header -->
+    <columnHeader>
+        <band height="25">
+            <staticText>
+                <reportElement x="0" y="0" width="80" height="25" style="HeaderStyle"/>
+                <text><![CDATA[Dni]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="80" y="0" width="120" height="25" style="HeaderStyle"/>
+                <text><![CDATA[Nombre]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="200" y="0" width="100" height="25" style="HeaderStyle"/>
+                <text><![CDATA[Médico]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="300" y="0" width="100" height="25" style="HeaderStyle"/>
+                <text><![CDATA[Razón]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="400" y="0" width="70" height="25" style="HeaderStyle"/>
+                <text><![CDATA[Estado]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="470" y="0" width="85" height="25" style="HeaderStyle"/>
+                <text><![CDATA[Tipo]]></text>
+            </staticText>
+        </band>
+    </columnHeader>
+
+    <!-- Detail -->
+    <detail>
+        <band height="20">
+            <textField>
+                <reportElement x="0" y="0" width="80" height="20" style="DetailStyle"/>
+                <textFieldExpression><![CDATA[$F{col1}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="80" y="0" width="120" height="20" style="DetailStyle"/>
+                <textFieldExpression><![CDATA[$F{col2}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="200" y="0" width="100" height="20" style="DetailStyle"/>
+                <textFieldExpression><![CDATA[$F{col3}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="300" y="0" width="100" height="20" style="DetailStyle"/>
+                <textFieldExpression><![CDATA[$F{col4}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="400" y="0" width="70" height="20" style="DetailStyle"/>
+                <textFieldExpression><![CDATA[$F{col5}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="470" y="0" width="85" height="20" style="DetailStyle"/>
+                <textFieldExpression><![CDATA[$F{col6}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+
+</jasperReport>

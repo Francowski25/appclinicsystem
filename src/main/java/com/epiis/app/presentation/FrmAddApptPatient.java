@@ -1,0 +1,340 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JInternalFrame.java to edit this template
+ */
+package com.epiis.app.presentation;
+
+import com.epiis.app.business.BusinessApptRequet;
+import com.epiis.app.business.BusinessDoctorSpecialty;
+import com.epiis.app.business.BusinessSchedule;
+import com.epiis.app.business.BusinessSpecialty;
+import com.epiis.app.dataaccess.query.QEmployee;
+import com.epiis.app.dto.DtoDoctorSpecialty;
+import com.epiis.app.dto.DtoEmployee;
+import com.epiis.app.dto.DtoPatient;
+import com.epiis.app.dto.DtoSpecialty;
+import com.epiis.app.config.Message;
+import com.epiis.app.dto.DtoSchedule;
+import java.sql.SQLException;
+import java.sql.Time;
+import java.util.Date;
+import java.util.List;
+
+/**
+ *
+ * @author jhona
+ */
+public class FrmAddApptPatient extends javax.swing.JInternalFrame {
+    DtoPatient dtoPatient = null;
+    DtoEmployee dtoEmployee = null;
+    QEmployee qEmployee = null;
+    BusinessApptRequet businessApptRequet = null;
+    BusinessSpecialty businessSpecialty = null;
+    BusinessDoctorSpecialty businessDoctorSpecialty = null;
+    BusinessSchedule businessSchedule = null;
+    /**
+     * Creates new form FrmAddApptPatient
+     * @param dtoPatient
+     */
+    public FrmAddApptPatient(DtoPatient dtoPatient) {
+        this.businessDoctorSpecialty = new BusinessDoctorSpecialty();
+        this.dtoEmployee = new DtoEmployee();
+        this.businessApptRequet = new BusinessApptRequet();
+        this.qEmployee = new QEmployee();
+        this.businessSpecialty = new BusinessSpecialty();
+        this.dtoPatient = dtoPatient;
+        this.businessSchedule = new BusinessSchedule();
+        initComponents();
+        this.init();
+    }
+
+    
+    private void init() {
+        try {
+            comboEsp.removeAllItems();
+            List<DtoSpecialty> listSpecialty = businessSpecialty.getAll();
+            for (DtoSpecialty spe : listSpecialty) {
+                comboEsp.addItem(spe.getName());
+            }
+            comboEsp.addActionListener(e -> updateDoctorsBySpecialty());
+
+            updateDoctorsBySpecialty();
+
+            dateCita.getDateEditor().addPropertyChangeListener(evt -> {
+                if ("date".equals(evt.getPropertyName())) {
+                    updateFreeHours();
+                }
+            });
+
+            comboMedico.addActionListener(e -> updateFreeHours());
+
+        } catch (SQLException e) {
+            Message.error(this, e.getMessage());
+        }
+    }
+
+    private void updateDoctorsBySpecialty() {
+        try {
+            comboMedico.removeAllItems();
+            String selectedSpecialty = (String) comboEsp.getSelectedItem();
+            if (selectedSpecialty == null || selectedSpecialty.isEmpty()) {
+                return;
+            }
+
+            List<DtoDoctorSpecialty> list = businessDoctorSpecialty.getAll();
+            boolean isMedico = false;
+
+            for (DtoDoctorSpecialty ds : list) {
+                if (ds.getDtoSpecialty().getName().equals(selectedSpecialty)) {
+                    comboMedico.addItem(ds.getDtoEmployee().getFirstName());
+                    isMedico = true;
+                }
+            }
+
+            if (!isMedico) {
+                comboMedico.addItem("sin medico");
+            }
+
+            if (isMedico) {
+                updateFreeHours();
+            }
+
+        } catch (SQLException e) {
+            Message.warning(this, e.getMessage());
+        }
+    }
+
+    private void updateFreeHours() {
+        comboHoras.removeAllItems();
+
+        try {
+            String medico = (String) comboMedico.getSelectedItem();
+            if (medico == null || medico.equals("sin medico")) {
+                return;
+            }
+
+            dtoEmployee = qEmployee.getByFirstName(medico);
+            if (dtoEmployee == null) {
+                return;
+            }
+
+            Date fecha = dateCita.getDate();
+            if (fecha == null) {
+                return;
+            }
+
+            DtoSchedule lastSchedule = businessSchedule.getLastByEmployee(dtoEmployee.getIdEmployee());
+            if (lastSchedule == null || lastSchedule.getIdSchedule() == null) {
+                return;
+            }
+
+            List<String> freeHours = businessSchedule.getFreeHours(lastSchedule.getIdSchedule(), fecha);
+
+            if (freeHours.isEmpty()) {
+                comboHoras.addItem("No hay horas disponibles");
+            } else {
+                for (String h : freeHours) comboHoras.addItem(h);
+            }
+
+        } catch (SQLException | IllegalArgumentException e) {
+            Message.warning(this, e.getMessage());
+        }
+    }
+
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jLabel5 = new javax.swing.JLabel();
+        comboEsp = new javax.swing.JComboBox<>();
+        comboMedico = new javax.swing.JComboBox<>();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
+        jButton2 = new javax.swing.JButton();
+        txtMotivo = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        dateCita = new com.toedter.calendar.JDateChooser();
+        comboHoras = new javax.swing.JComboBox<>();
+
+        setClosable(true);
+        setIconifiable(true);
+        setTitle("Reservar cita");
+
+        jLabel5.setText("Médico");
+
+        comboEsp.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        comboMedico.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        jLabel7.setText("Motivo");
+
+        jLabel2.setText("Especialidad");
+
+        jButton1.setIcon(new javax.swing.ImageIcon("F:\\jackzinho\\appclinicsystem\\icons\\crear.png")); // NOI18N
+        jButton1.setText("Crear");
+        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        jLabel3.setText("Hora de cita");
+
+        jButton2.setIcon(new javax.swing.ImageIcon("F:\\jackzinho\\appclinicsystem\\icons\\salir.png")); // NOI18N
+        jButton2.setText("Salir");
+        jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        jLabel4.setText("Fecha de cita");
+
+        comboHoras.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(108, 108, 108)
+                        .addComponent(jButton1)
+                        .addGap(36, 36, 36)
+                        .addComponent(jButton2))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(24, 24, 24)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(jLabel7)
+                                        .addComponent(jLabel4)
+                                        .addComponent(comboEsp, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(dateCita, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(jLabel2))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jLabel3)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(2, 2, 2)
+                                        .addComponent(jLabel5))
+                                    .addComponent(comboMedico, 0, 150, Short.MAX_VALUE)
+                                    .addComponent(comboHoras, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addComponent(txtMotivo, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 328, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(26, Short.MAX_VALUE))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel5))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(comboEsp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(comboMedico, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel3))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(dateCita, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(comboHoras, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(12, 12, 12)
+                .addComponent(jLabel7)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtMotivo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton1)
+                    .addComponent(jButton2))
+                .addGap(14, 14, 14))
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        try {
+            String medico = (String) comboMedico.getSelectedItem();
+            if (medico == null || medico.equals("sin medico")) {
+                Message.warning(this, "Debe seleccionar un médico válido.");
+                return;
+            }
+            dtoEmployee = this.qEmployee.getByFirstName(medico);
+            if (dtoEmployee == null) {
+                Message.warning(this, "Empleado no encontrado.");
+                return;
+            }
+
+            Date fechaCita = dateCita.getDate();
+            if (fechaCita == null) {
+                Message.warning(this, "Debe seleccionar una fecha válida.");
+                return;
+            }
+
+            String selectedHour = (String) comboHoras.getSelectedItem();
+            if (selectedHour == null || selectedHour.equals("No hay horas disponibles")) {
+                Message.warning(this, "Debe seleccionar una hora válida.");
+                return;
+            }
+
+            String horaInicioStr = selectedHour.contains(" - ") 
+                                   ? selectedHour.split(" - ")[0] 
+                                   : selectedHour;
+
+            Time time = Time.valueOf(horaInicioStr);
+
+            String reason = txtMotivo.getText();
+
+            if (this.businessApptRequet.insert(this.dtoPatient, dtoEmployee, fechaCita, time, reason, "pendiente", "online")) {
+                Message.success(this, "La cita se realizó exitosamente");
+                txtMotivo.setText("");
+                this.updateFreeHours();
+
+            } 
+        }  catch (IllegalArgumentException | SQLException e) {
+            Message.warning(this, e.getMessage());
+        }
+
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        this.dispose();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> comboEsp;
+    private javax.swing.JComboBox<String> comboHoras;
+    private javax.swing.JComboBox<String> comboMedico;
+    private com.toedter.calendar.JDateChooser dateCita;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JTextField txtMotivo;
+    // End of variables declaration//GEN-END:variables
+}
