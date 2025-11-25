@@ -5,6 +5,7 @@
 package com.epiis.app.presentation;
 
 import com.epiis.app.business.BusinessApptRequet;
+import com.epiis.app.config.Message;
 import com.epiis.app.dto.DtoApptRequest;
 import com.epiis.app.dto.DtoPatient;
 import java.sql.SQLException;
@@ -22,7 +23,7 @@ public class FrmManageApptPatient extends javax.swing.JInternalFrame {
     private final DefaultTableModel dtmTablePerson = new DefaultTableModel() {
         @Override
         public boolean isCellEditable(int row, int column) {
-            return column == 7;
+            return column == 5;
         }
     };
     /**
@@ -42,7 +43,6 @@ public class FrmManageApptPatient extends javax.swing.JInternalFrame {
 
             this.tableAppt.setModel(dtmTablePerson);
 
-            this.dtmTablePerson.addColumn("Médico");
             this.dtmTablePerson.addColumn("Fecha de cita");
             this.dtmTablePerson.addColumn("Hora de cita");
             this.dtmTablePerson.addColumn("motivo");
@@ -52,7 +52,6 @@ public class FrmManageApptPatient extends javax.swing.JInternalFrame {
             for (DtoApptRequest item : listDtoPerson) {
                 if(item.getDtoPatient().getIdPatient().equals(this.dtoPatient.getIdPatient()) && item.getStatus().equalsIgnoreCase("pendiente")){
                     this.dtmTablePerson.addRow(new Object[]{
-                        item.getDtoEmployee().getFirstName(),
                         item.getRequestDate(),
                         item.getRequestTime(),
                         item.getReason(),
@@ -63,7 +62,7 @@ public class FrmManageApptPatient extends javax.swing.JInternalFrame {
             }
 
         } catch (SQLException ex) {
-            //JOptionPane.showMessageDialog(this, "Error al cargar datos: " + ex.getMessage());
+            Message.error(this, ex.getMessage());
         }
     }
     /**

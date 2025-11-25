@@ -55,29 +55,6 @@ public class QPatient implements RepoPatient{
         return dto;
     }
 
-
-    /*@Override
-    public boolean isPatient(String email, String password) throws SQLException {
-        this.dbc = new DbConnection();
-
-        String sql = "SELECT COUNT(*) AS total FROM tpatient WHERE email = ? AND password = ?";
-        PreparedStatement ps = this.dbc.connection.prepareStatement(sql);
-
-        ps.setString(1, email);
-        ps.setString(2, password);
-
-        ResultSet rs = ps.executeQuery();
-
-        boolean exists = false;
-
-        if (rs.next()) {
-            exists = rs.getInt("total") > 0;
-        }
-
-        this.dbc.connection.close();
-        return exists;
-    }*/
-
     @Override
     public int insert(DtoPatient dtoPatient) throws SQLException {
         this.dbc = new DbConnection();

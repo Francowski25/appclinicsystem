@@ -252,6 +252,3 @@ INSERT INTO tconsultation VALUES
 ('con-008','apt-008','emp-004','pre-008','2025-01-08','Dermatitis','Crema tópica'),
 ('con-009','apt-009','emp-005','pre-009','2025-01-09','Lumbalgia','Ejercicios'),
 ('con-010','apt-010','emp-007','pre-010','2025-01-10','Fatiga','Evaluación adicional');
-
-select * from tappointmentRequest;
-select * from tscheduleDetail;

@@ -4,7 +4,13 @@
  */
 package com.epiis.app.presentation;
 
+import com.epiis.app.business.BusinessApptRequet;
+import com.epiis.app.config.Message;
+import com.epiis.app.dto.DtoApptRequest;
 import com.epiis.app.dto.DtoPatient;
+import java.sql.SQLException;
+import java.util.List;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -12,6 +18,14 @@ import com.epiis.app.dto.DtoPatient;
  */
 public class FrmReschedule extends javax.swing.JInternalFrame {
     DtoPatient dtoPatient = null;
+    BusinessApptRequet businessApptRequet = null;
+        
+    private final DefaultTableModel dtmTablePerson = new DefaultTableModel() {
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return column == 7;
+        }
+    };
     /**
      * Creates new form FrmReschedule
      * @param dtoPatient
@@ -19,8 +33,37 @@ public class FrmReschedule extends javax.swing.JInternalFrame {
     public FrmReschedule(DtoPatient dtoPatient) {
         this.dtoPatient = dtoPatient;
         initComponents();
+        this.init();
     }
+    private void init() {
+        try {
+            this.businessApptRequet = new BusinessApptRequet();
+            List<DtoApptRequest> listDtoPerson = this.businessApptRequet.getAll();
 
+            this.tableReschedule.setModel(dtmTablePerson);
+
+            this.dtmTablePerson.addColumn("Fecha de cita");
+            this.dtmTablePerson.addColumn("Hora de cita");
+            this.dtmTablePerson.addColumn("Motivo");
+            this.dtmTablePerson.addColumn("Estado");
+            this.dtmTablePerson.addColumn("Fecha solicitada");
+
+            for (DtoApptRequest item : listDtoPerson) {
+                if(item.getDtoPatient().getIdPatient().equals(this.dtoPatient.getIdPatient()) && (item.getStatus().equalsIgnoreCase("pendiente") || item.getStatus().equalsIgnoreCase("confirmada"))){
+                    this.dtmTablePerson.addRow(new Object[]{
+                        item.getRequestDate(),
+                        item.getRequestTime(),
+                        item.getReason(),
+                        item.getStatus(),
+                        item.getCreatedAt(),
+                    });
+                }
+            }
+
+        } catch (SQLException ex) {
+            Message.error(this, ex.getMessage());
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -30,19 +73,79 @@ public class FrmReschedule extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tableReschedule = new javax.swing.JTable();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        jLabel3 = new javax.swing.JLabel();
+        jDateChooser1 = new com.toedter.calendar.JDateChooser();
+        jButton1 = new javax.swing.JButton();
+
         setClosable(true);
         setIconifiable(true);
         setTitle("Reprogramar cita");
+
+        jScrollPane1.setViewportView(tableReschedule);
+
+        jLabel1.setText("Seleccione la cita");
+
+        jLabel2.setText("Cita a reprogramar");
+
+        jScrollPane2.setViewportView(jTable1);
+
+        jLabel3.setFont(new java.awt.Font("Rockwell", 3, 14)); // NOI18N
+        jLabel3.setText("Nueva fecha");
+
+        jButton1.setIcon(new javax.swing.ImageIcon("F:\\jackzinho\\appclinicsystem\\icons\\confrimar.png")); // NOI18N
+        jButton1.setText("Confirmar");
+        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 394, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 381, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 381, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 62, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addGap(68, 68, 68))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(21, 21, 21))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jButton1)
+                        .addGap(40, 40, 40))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 274, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton1)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -50,5 +153,14 @@ public class FrmReschedule extends javax.swing.JInternalFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
+    private com.toedter.calendar.JDateChooser jDateChooser1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTable jTable1;
+    private javax.swing.JTable tableReschedule;
     // End of variables declaration//GEN-END:variables
 }

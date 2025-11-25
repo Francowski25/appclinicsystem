@@ -15,4 +15,5 @@ import java.util.List;
 public interface RepoConsultation {
     int insert(DtoConsultation dtoConsultation) throws SQLException;
     List<DtoConsultation> getAll() throws SQLException;
+    List<DtoConsultation> getByPatient(String idPatient) throws SQLException;
 }

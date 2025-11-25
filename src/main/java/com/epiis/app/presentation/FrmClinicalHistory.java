@@ -32,6 +32,7 @@ public class FrmClinicalHistory extends javax.swing.JInternalFrame {
     };
     /**
      * Creates new form FrmClinicalHistory
+     * @param dtoPatient
      */
     public FrmClinicalHistory(DtoPatient dtoPatient) {
         this.dtoPatient = dtoPatient;
@@ -40,13 +41,10 @@ public class FrmClinicalHistory extends javax.swing.JInternalFrame {
         this.init();
     }
        
-    // historial clinico: tappointment ⟶ tconsultation ⟶ tprescription ⟶ temployee + tspecialty
-    //                  : cita            consulta médica   receta           medico + espcecialidad
     private void init() {
         try {
             this.businessPatient = new BusinessPatient();
-            List<DtoConsultation> listDtoConsultations = this.businessConsultation.getAll();
-
+            List<DtoConsultation> listDtoConsultations = this.businessConsultation.getByPatient(this.dtoPatient.getIdPatient());
             this.tableHistory.setModel(dtmTablePerson);
 
             this.dtmTablePerson.addColumn("ID");

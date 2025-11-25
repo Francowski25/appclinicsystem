@@ -42,4 +42,9 @@ public class BusinessConsultation {
         RepoConsultation repoConsultation = new QConsultation();
         return repoConsultation.getAll();
     }
+    
+    public List<DtoConsultation> getByPatient(String idPatient) throws SQLException{
+        RepoConsultation repoConsultation = new QConsultation();
+        return repoConsultation.getByPatient(idPatient);
+    }
 }
